@@ -193,7 +193,7 @@ function callback(result) {
          html: e.getTitle().getText(),
          click: (function(current_e) {
             return function() {
-               $("#grid, #save-button").remove();
+               $('#grid, #save-button, #cancel-button').remove();
 
                var container = $(this).parent().eq(0);
 
@@ -213,7 +213,7 @@ function callback(result) {
 
                         $('#save-button').attr('disabled', 'disabled');
 
-                        $('#save-button').next().remove();
+                        $('#cancel-button').next().remove();
 
                         var properties = [];
 
@@ -239,14 +239,23 @@ function callback(result) {
                               if (result.entry) {
                                  $('#save-button').attr('disabled', false);
 
-                                 $('#save-button').next().remove();
-                                 $('#save-button').after('<span class="result">Saved.</span>');
+                                 $('#cancel-button').next().remove();
+                                 $('#cancel-button').after('<span class="result">Saved.</span>');
                               }
                            },
                            handleError
                         );
                      }
                   })(current_e)
+               }).appendTo(container);
+
+               $('<input />', {
+                  id: 'cancel-button',
+                  value: 'Cancel',
+                  type: 'button',
+                  click: function() {
+                     $('#grid, #save-button, #cancel-button').remove();
+                  }
                }).appendTo(container);
 
                createGrid(current_e);
