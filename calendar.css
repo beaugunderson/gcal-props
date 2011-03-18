@@ -10,6 +10,12 @@ h1 {
    margin-bottom: 0.25em;
 }
 
+a,
+a:visited {
+   text-decoration: none;
+   color: #7591d1;
+}
+
 #title {
    font-family: "LatoBlack", "Arial Black";
    font-size: 4em;
