@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+  <title>Google Calendar Extended Property Editor</title>
+
+  <!-- Libraries -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js"></script>
+
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+  <script type="text/javascript" src="lib/date.js"></script>
+
+  <script type="text/javascript" src="lib/SlickGrid/lib/jquery.event.drag-2.0.min.js"></script>
+
+  <script type="text/javascript" src="lib/SlickGrid/slick.core.js"></script>
+  <script type="text/javascript" src="lib/SlickGrid/slick.editors.js"></script>
+  <script type="text/javascript" src="lib/SlickGrid/slick.grid.js"></script>
+  <script type="text/javascript" src="lib/SlickGrid/slick.dataview.js"></script>
+
+  <script type="text/javascript" src="lib/SlickGrid/plugins/slick.rowselectionmodel.js"></script>
+
+  <link rel="stylesheet" href="lib/SlickGrid/slick.grid.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="lib/SlickGrid/examples/examples.css" type="text/css" media="screen" charset="utf-8" />
+  <!-- End libraries -->
+
+  <script type="text/javascript" src="calendar.js"></script>
+
+  <link rel="stylesheet" href="calendar.css" type="text/css" media="screen" charset="utf-8" />
+ </head>
+
+ <body>
+  <div id="wrapper">
+   <p>Retrieve your list of calendars, select one, and then click on your events to edit their extended properties.</p>
+
+   <input type="button" value="Retrieve Calendars" id="go" disabled="disabled"/>
+
+   <ul id="calendars" style="display: none;"></ul>
+
+   <ul id="results" style="display: none;"></ul>
+  </div>
+
+  <img src="images/spacer.gif" style="display: none; visibility: hidden;" />
+ </body>
+</html>
