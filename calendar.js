@@ -182,15 +182,26 @@ function callback(result) {
    for (var i = 0; i < entries.length; i++ ) {
       var e = entries[i];
 
-      //var eventTime = e.getTimes()[0];
+      console.log(e.getTitle().getText(), e.getTimes());
 
-      //var start = eventTime.getStartTime().getDate();
-      //var end = eventTime.getEndTime().getDate();
+      var times = e.getTimes();
+
+      times.sort(function(a, b) {
+         var s1 = a.getStartTime().date;
+         var s2 = b.getStartTime().date;
+
+         return s2.compareTo(s1);
+      });
+
+      var eventTime = times[times.length - 1];
+
+      var start = eventTime.getStartTime().getDate();
+      var end = eventTime.getEndTime().getDate();
 
       var li = $('<li />').appendTo("#results");
 
       $("<span />", {
-         html: e.getTitle().getText(),
+         html: sprintf('<span class="date">%s</span> %s', start.toString("MM/dd"), e.getTitle().getText()),
          click: (function(current_e) {
             return function() {
                $('#grid, #save-button, #cancel-button').remove();
