@@ -1,7 +1,7 @@
 body {
    font-family: Arial;
-   padding-left: 3em;
-   padding-right: 3em;
+   padding-left: 0.5em;
+   padding-right: 0.5em;
 }
 
 h1 {
@@ -10,9 +10,26 @@ h1 {
    margin-bottom: 0.25em;
 }
 
+#error {
+   border-radius: 5px;
+   -moz-border-radius: 5px;
+   background-color: #EB9DB0;
+   padding: 5px;
+   font-weight: bold;
+}
+
+#error-text {
+   font-weight: normal;
+   padding-top: 1em;
+   padding-left: 1em;
+}
+
+a {
+   text-decoration: none;
+}
+
 a,
 a:visited {
-   text-decoration: none;
    color: #7591d1;
 }
 

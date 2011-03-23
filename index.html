@@ -9,7 +9,7 @@
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js"></script>
 
-  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript" src="https://www.google.com/jsapi?key=ABQIAAAAlZsrqmCaWqvpryltpytFJhTOzkebaIRItmEIhTQfLzW9oFyxmhTYC_0ng5MX_SQOIt0FDU-NFQldxQ"></script>
 
   <script type="text/javascript" src="lib/date.js"></script>
 
@@ -22,6 +22,7 @@
 
   <script type="text/javascript" src="lib/SlickGrid/plugins/slick.rowselectionmodel.js"></script>
 
+  <script type="text/javascript" src="lib/jquery.ba-bbq.min.js"></script>
   <script type="text/javascript" src="lib/button.js"></script>
   <script type="text/javascript" src="lib/sprintf.js"></script>
 
@@ -42,11 +43,17 @@
 
   <div id="wrapper">
    <a href="https://github.com/beaugunderson/gcal-props"
-       class="gitforked-button gitforked-forks gitforked-watchers">Fork</a>
+    class="gitforked-button gitforked-forks gitforked-watchers">Fork</a>
 
-   <p>Retrieve your list of calendars, select one, and then click on your events to edit their extended properties.</p>
+   <p>Retrieve your list of Google calendars, select one, and then click on your events to edit their extended properties.</p>
 
-   <input type="button" value="Retrieve Calendars" id="go" disabled="disabled"/>
+   <div id="error" style="display: none;">
+    Sorry, an error has occurred:
+
+    <div id="error-text"></div>
+   </div>
+
+   <input type="button" value="Login to Google Calendar" id="go" style="display: none;" />
 
    <ul id="calendars" style="display: none;"></ul>
 

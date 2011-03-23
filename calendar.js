@@ -3,6 +3,8 @@ var data = [];
 var dataView;
 var sortcol = "p";
 var new_counter = 0;
+var scope = "https://www.google.com/calendar/feeds/";
+var field_types = [];
 
 function createGrid(e) {
    function requiredFieldValidator(value) {
@@ -24,7 +26,7 @@ function createGrid(e) {
          id: "p",
          name: "Property",
          field: "p",
-         width: 120,
+         width: 150,
          editor: TextCellEditor,
          validator: requiredFieldValidator,
          sortable: true
@@ -33,7 +35,7 @@ function createGrid(e) {
          id: "v",
          name: "Value",
          field: "v",
-         width: 480,
+         width: 450,
          editor: TextCellEditor,
          sortable: true
       }
@@ -46,7 +48,7 @@ function createGrid(e) {
       enableColumnReorder: false,
       asyncEditorLoading: false,
       forceFitColumns: true,
-      autoEdit: false
+      autoEdit: true
    };
 
    var extended_properties = e.getExtendedProperties();
@@ -83,7 +85,19 @@ function createGrid(e) {
       dataView.sort(comparer, args.sortAsc);
    });
 
-   grid.onCellChange.subscribe(function(e,args) {
+   grid.onBeforeEditCell.subscribe(function(e, args) {
+      if (field_types && arg.items) {
+         if (field_types[args.item.p] == 'b') {
+            args.column.editor = YesNoCheckboxCellEditor;
+         } else {
+            args.column.editor = TextCellEditor;
+         }
+      } else {
+         args.column.editor = TextCellEditor;
+      }
+   });
+
+   grid.onCellChange.subscribe(function(e, args) {
       dataView.updateItem(args.item.id, args.item);
    });
 
@@ -113,26 +127,67 @@ function createGrid(e) {
 
    dataView.beginUpdate();
    dataView.setItems(data);
+
+   // Add template fields if they don't already exist
+   for (var i in field_types) {
+      if (inData(data, i)) {
+         continue;
+      }
+
+      new_counter++;
+
+      var item = {
+         id: "new_" + new_counter,
+         p: i,
+         v: ""
+      };
+
+      dataView.addItem(item);
+   }
+
    dataView.endUpdate();
 }
 
-function loaded() {
-   $("#go").click(function() {
-      retrieveCalendars();
-   });
+function inData(data, p) {
+   for (var i = 0; i < data.length; i++) {
+      if (data[i]['p'] == p) {
+         return true;
+      }
+   }
 
-   $("#go").attr("disabled", false);
+   return false;
+}
+
+function loaded() {
+   //#f%5BHomeFeatured%5D=b&f%5BSubFeatured%5D=b
+   field_types = $.bbq.getState('f');
+
+   try {
+      if (google.accounts.user.checkLogin(scope)) {
+         queryCalendars('https://www.google.com/calendar/feeds/default/allcalendars/full');
+      } else {
+         $("#go").click(function() {
+            if (google.accounts.user.login(scope)) {
+               $("#go").hide();
+            }
+         });
+
+         $("#go").show();
+      }
+   } catch (e) {
+      handleError(e);
+   }
 }
 
 function handleError(e) {
-   alert("error: " + (e.cause ? e.cause.statusText : e.message));
+   $("#error-text").text(e.cause ? e.cause.statusText : e.message);
+   $("#error").show();
 }
 
 function queryCalendars(uri) {
    var calendarService = new google.gdata.calendar.CalendarService('bam-calendar');
 
-   calendarService.getAllCalendarsFeed(uri,
-   function(root) {
+   calendarService.getAllCalendarsFeed(uri, function(root) {
       $("#calendars").show();
 
       var entries = root.feed.getEntries();
@@ -149,8 +204,13 @@ function queryCalendars(uri) {
 
          $('<li />', {
             click: (function(current_c) {
+               // XXX This is a hack because even though we use only https URLs
+               // Google returns the ID of calendars with an http:// protocol in
+               // the feed.
+               var id = current_c.id.replace('http://', 'https://');
+
                return function() {
-                  queryCalendarEvents(current_c.id);
+                  queryCalendarEvents(id);
                }
             })(c),
             html: c.title,
@@ -163,18 +223,8 @@ function queryCalendars(uri) {
    handleError);
 }
 
-function retrieveCalendars() {
-   var scope = "http://www.google.com/calendar/feeds/";
-
-   if (google.accounts.user.login(scope)) {
-      $("#go").attr("disabled", "disabled");
-
-      queryCalendars('http://www.google.com/calendar/feeds/default/allcalendars/full');
-   }
-}
-
-function callback(result) {
-   var entries = result.feed.entry;
+function callback(root) {
+   var entries = root.feed.getEntries();
 
    $("#results").html('');
    $("#results").show();
@@ -182,10 +232,10 @@ function callback(result) {
    for (var i = 0; i < entries.length; i++ ) {
       var e = entries[i];
 
-      console.log(e.getTitle().getText(), e.getTimes());
-
       var times = e.getTimes();
 
+      // Dates for repeating events are returned in an
+      // unspecified ordering so we have to sort them.
       times.sort(function(a, b) {
          var s1 = a.getStartTime().date;
          var s2 = b.getStartTime().date;
